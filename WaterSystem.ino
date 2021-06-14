@@ -1,14 +1,13 @@
-#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x20, 16, 2);
 
-int pump = 13;
 int moisture;
 
 void setup() {
   initiate_lcd();
   Serial.begin(57600);
+  pinMode(12, OUTPUT);
 }
 
 void loop() {
@@ -19,47 +18,30 @@ void loop() {
 void initiate_lcd() {
   lcd.init();
   lcd.backlight();
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Hello World");
-  lcd.setCursor(0, 1);
-  lcd.print("haha. yes.");
 }
 
-
 void control_moisture() {
-  moisture = analogRead(A0);
-
-
   if (moisture < 300) {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Im dying!");
+    lcd.print("Te droog");
     lcd.setCursor(0, 1);
-    lcd.print("Watering");
-
-    digitalWrite(13, HIGH);
-    delay(2000);
-    digitalWrite(13, LOW);
-  }
-  if (300 < moisture < 700) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Im fine!");
-    lcd.setCursor(0, 1);
+    lcd.print("Pomp aan");
+    digitalWrite(12, HIGH);
     delay(5000);
   }
-  if (moisture > 900) {
+  if (moisture > 950) {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Im drowning!");
-    digitalWrite(13, LOW);
+    lcd.print("OK");
+    lcd.setCursor(0, 1);
+    digitalWrite(12, LOW);
     delay(5000);
   }
 }
 
 void read_humidity() {
-
+  moisture = analogRead(A3);
   Serial.println(moisture);
 
 }
